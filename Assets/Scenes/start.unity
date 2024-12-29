@@ -465,6 +465,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerName: 
+  highScorePlayerName: 
+  highScore: 0
 --- !u!4 &514551118
 Transform:
   m_ObjectHideFlags: 0

@@ -13,7 +13,8 @@ public class MainManager : MonoBehaviour
     public Text ScoreText;
     public Text highScoreText;
     public GameObject GameOverText;
-    
+    public GameObject ResetHighScoreButton;
+
     private bool m_Started = false;
     private int m_Points;
     
@@ -23,7 +24,15 @@ public class MainManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        ResetHighScoreButton.SetActive(false);
         ScoreText.text = InformationManager.Instance.playerName + $" Score : {m_Points}";
+        
+        if(InformationManager.Instance.highScorePlayerName != null)
+        {
+            highScoreText.text = "Best Score : " + InformationManager.Instance.highScorePlayerName + " : " + InformationManager.Instance.highScore;
+        }
+        
+        
         const float step = 0.6f;
         int perLine = Mathf.FloorToInt(4.0f / step);
         
@@ -66,14 +75,35 @@ public class MainManager : MonoBehaviour
 
     void AddPoint(int point)
     {
-        Debug.Log(InformationManager.Instance.playerName);
+        //Debug.Log(InformationManager.Instance.playerName);
         m_Points += point;
         ScoreText.text = InformationManager.Instance.playerName + $" Score : {m_Points}";
+
+        if(InformationManager.Instance.highScorePlayerName == null || (m_Points > InformationManager.Instance.highScore))
+        {
+            InformationManager.Instance.highScorePlayerName = InformationManager.Instance.playerName;
+            InformationManager.Instance.highScore = m_Points;
+
+            highScoreText.text = "Best Score : " + InformationManager.Instance.highScorePlayerName + " : " + InformationManager.Instance.highScore;
+        }
     }
 
     public void GameOver()
     {
         m_GameOver = true;
+
+        InformationManager.Instance.SaveHighScore();
+
         GameOverText.SetActive(true);
+        ResetHighScoreButton.SetActive(true);
+    }
+
+    public void ResetHighScore()
+    {
+        InformationManager.Instance.highScorePlayerName = null;
+        InformationManager.Instance.highScore = 0;
+        InformationManager.Instance.SaveHighScore();
+        highScoreText.text = "Best Score : " + InformationManager.Instance.highScorePlayerName + " : " + InformationManager.Instance.highScore;
+
     }
 }
